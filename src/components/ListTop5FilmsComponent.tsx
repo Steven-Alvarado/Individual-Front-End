@@ -1,24 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import  Player  from 'lottie-react'; // Correct import for Player
 import animationData from '../assets/Animation - 1727534153149.json'; // Ensure the path is correct
+import { listTop5Films } from '../services/ListTop5Films';
+const ListTop5FilmComponent = () => {
 
-const ListFilmComponent = () => {
-    const dummyData = [
-        { id: 1, title: "Donnie Darko", imageUrl: "https://via.placeholder.com/150" },
-        { id: 2, title: "Juno", imageUrl: "https://via.placeholder.com/150" },
-        { id: 3, title: "Alice In Wonderland", imageUrl: "https://via.placeholder.com/150" },
-        { id: 4, title: "Inception", imageUrl: "https://via.placeholder.com/150" },
-        { id: 5, title: "The Matrix", imageUrl: "https://via.placeholder.com/150" }
-    ];
+    const [film, setTop5Films] = useState([])
 
+    useEffect(() => {
+        listTop5Films().then((response) => {
+            setTop5Films(response.data);
+        }).catch(error => {
+            console.error(error);  
+    })
+}, [])
+
+        
+     
     return (
         <div className="flex justify-center items-center h-screen w-full">
             <div className="bg-slate-600 shadow-lg text-white w-full p-4">
                 <h1 className="text-3xl mb-4 text-center">Top 5 Films</h1>
                 <div className="grid grid-cols-5 gap-4">
-                    {dummyData.map(film => (
+                    {film.map(film => (
                         <div 
-                            key={film.id} 
+                            key={film.film_id} 
                             className="relative bg-blue-600 rounded-lg shadow hover:scale-105 transition-transform duration-200 ease-in-out flex flex-col w-full"
                         >
                             <Player 

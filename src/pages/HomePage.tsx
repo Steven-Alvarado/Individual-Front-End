@@ -1,9 +1,9 @@
 import React from 'react';
-import ListFilmComponent from '../components/ListFilmComponent';
+import ListTop5FilmsComponent from '../components/ListTop5FilmsComponent';
 const HomePage = () => {
   return (
     <div >
-     <ListFilmComponent/>
+     <ListTop5FilmsComponent/>
       
     </div>
   );
