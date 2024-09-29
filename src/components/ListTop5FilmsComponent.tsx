@@ -23,7 +23,7 @@ const ListTop5FilmComponent = () => {
                 <div className="grid grid-cols-5 gap-4">
                     {film.map(film => (
                         <div 
-                            key={film.film_id} 
+                            key={film} 
                             className="relative bg-blue-600 rounded-lg shadow hover:scale-105 transition-transform duration-200 ease-in-out flex flex-col w-full"
                         >
                             <Player 
@@ -33,7 +33,7 @@ const ListTop5FilmComponent = () => {
                                 style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '0.5rem' }} 
                             />
                             <div className="flex-grow flex items-center justify-center h-20"> {/* Adjust height for title area */}
-                                <div className="text-center">{film.title}</div>
+                                <div className="text-center">{film}</div>
                             </div>
                             <button className="absolute bottom-2 right-2 bg-blue-500 text-white px-2 py-1 rounded opacity-0 hover:opacity-100 transition-oblupacity duration-200 ease-in-out">
                                 Show Details
@@ -46,5 +46,5 @@ const ListTop5FilmComponent = () => {
     );
 };
 
-export default ListFilmComponent;
+export default ListTop5FilmComponent;
 
