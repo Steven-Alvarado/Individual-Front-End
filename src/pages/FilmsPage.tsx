@@ -1,11 +1,12 @@
 import React from 'react';
+import ListFilmComponent from '../components/ListFilmComponent';
 
 const FilmsPage = () => {
   return (
-    <div className="text-center text-white">
+    
       
       
-    </div>
+      <ListFilmComponent/>
   );
 };
 

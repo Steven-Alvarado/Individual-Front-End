@@ -21,10 +21,15 @@ export const updateCustomer = async (
     email: string;
   }
 ) => {
-  return await axios.put(`${REST_API_BASE_URL}/${customerId}`, customerData); // Corrected syntax for template string
+  return await axios.put(`${REST_API_BASE_URL}/${customerId}`, customerData);
 };
 
 export const deleteCustomer = async (customerId: number) => {
-  return await axios.delete(`${REST_API_BASE_URL}/${customerId}`); // Corrected syntax for template string
-};
+  return await axios.delete(`${REST_API_BASE_URL}/${customerId}`); 
+}
+
+export const viewCustomer = async (customerId: number) => {
+  return await axios.get(`${REST_API_BASE_URL}/${customerId}`);
+}
+
 
