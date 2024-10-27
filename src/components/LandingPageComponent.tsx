@@ -64,7 +64,7 @@ const LandingPageComponent: React.FC = () => {
   };
 
   const handleShowActorDetails = (actor: Actor) => {
-    setSelectedActor(actor); // Set the selected actor to show details
+    setSelectedActor(actor); 
   };
 
   const handleCloseFilmModal = () => {
