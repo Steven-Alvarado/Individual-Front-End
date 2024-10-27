@@ -20,6 +20,7 @@ interface Customer {
   email: string;
   address: string;
   city: string;
+  district: string;
   country: string;
   postalCode: string;
   phone: string;
@@ -201,6 +202,11 @@ const confirmDeleteCustomer = async () => {
 
   // Handler function to process the return
   const handleReturnFilm = () => {
+    if (!currentCustomer || !currentCustomer.rentals) {
+      setErrorMessage('No customer or rental information available.');
+      return;
+    }
+
     const rental = currentCustomer.rentals.find(r => r.rentalId === parseInt(rentalIdToReturn));
 
     if (!rental) {
@@ -213,13 +219,13 @@ const confirmDeleteCustomer = async () => {
       return;
     }
 
-    // Call the API to return the film (assuming a returnFilm function is defined)
+    // Call to return the film
     returnFilm(parseInt(rentalIdToReturn))
       .then(() => {
         alert(`Film ID ${rentalIdToReturn} returned successfully.`);
         setErrorMessage('');
         setFilmIdToReturn(''); // Clear input field
-        // Optionally, update the rental history to show the returned status
+        
       })
       .catch((error) => {
         console.error('Error returning film:', error);
