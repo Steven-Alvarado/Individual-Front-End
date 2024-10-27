@@ -233,7 +233,7 @@ const confirmDeleteCustomer = async () => {
         />
       </div>
 
-      <Button onClick={() => setShowAddModal(true)} className="mb-4 flex items-center justify-center items-center bg-gray-800 text-teal-300 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+      <Button onClick={() => setShowAddModal(true)} className="mb-4 flex items-center justify-center items-center bg-gray-800 text-teal-300 border border-gray-800 rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
         <UserPlus className="h-4 w-4 mr-2 " /> Add Customer
       </Button>
 
