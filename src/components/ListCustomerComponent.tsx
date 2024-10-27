@@ -4,11 +4,25 @@ import { Input } from './ui/input';
 import { MoreHorizontal, Pencil, Trash2, UserPlus } from 'lucide-react';  // Icons
 import { listCustomers, addCustomer, updateCustomer, deleteCustomer } from '../services/CustomerService';
 
+interface Rental {
+  rentalId: number;
+  rentalDate: string;
+  returnDate: string | null;
+  filmTitle: string;
+  staffId: number;
+}
+
 interface Customer {
   customerId: number;
   firstName: string;
   lastName: string;
   email: string;
+  address: string;
+  city: string;
+  country: string;
+  postalCode: string;
+  phone: string; 
+  rentals?: Rental[];
   createDate: string;
   lastUpdate: string;
 }
@@ -28,6 +42,7 @@ const ListCustomerComponent: React.FC = () => {
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);  // For editing a customer
   const [formData, setFormData] = useState<CustomerFormData>({
     firstName: '',
@@ -131,7 +146,12 @@ const ListCustomerComponent: React.FC = () => {
     setCurrentPage(newPage);
   };
 
-  return (
+  const handleViewDetailsClick = (customer: Customer) => {
+    setCurrentCustomer(customer);  // Set current film for details
+    setShowDetailsModal(true);  // Open modal to show film details
+  };
+
+   return (
     <div className="container mx-auto py-20 p-4 center">
     
 
@@ -146,30 +166,30 @@ const ListCustomerComponent: React.FC = () => {
         />
       </div>
 
-      <Button onClick={() => setShowAddModal(true)} className="mb-4 flex items-center justify-center items-center bg-white text-blue-600 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+      <Button onClick={() => setShowAddModal(true)} className="mb-4 flex items-center justify-center items-center bg-gray-800 text-teal-300 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
         <UserPlus className="h-4 w-4 mr-2 " /> Add Customer
       </Button>
 
       {/* Customer Table */}
-      <div className="overflow-x-auto">
-        <table className="table-auto min-w-full text-left border-collapse">
+      <div className="overflow-x-auto border shadow-lg border-gray-800">
+        <table className="table-auto min-w-full h-16 text-left border-collapse">
           <thead>
-            <tr className="border">
-              <th className="px-4 py-2 bg-gray-50">ID</th>
-              <th className="px-4 py-2 ">First Name</th>
-              <th className="px-4 py-2 bg-gray-50">Last Name</th>
-              <th className="px-4 py-2 ">Email</th>
-              <th className="px-4 py-2 bg-gray-50">Actions</th>
+            <tr className="border border-gray-800">
+              <th className="px-4 py-2 w-16 bg-white">ID</th>
+              <th className="px-4 py-2 w-32 bg-white">First Name</th>
+              <th className="px-4 py-2 w-32 bg-white">Last Name</th>
+              <th className="px-4 py-2 w-1/2 bg-white">Email</th>
+              <th className="px-4 py-2 w-1/6 bg-white">Actions</th>
             </tr>
           </thead>
           <tbody>
             {currentCustomers.map((customer) => (
-              <tr key={customer.customerId} className="border">
-                <td className="px-4 py-2  bg-gray-50">{customer.customerId}</td>
-                <td className="px-4 py-2 ">{customer.firstName}</td>
-                <td className="px-4 py-2  bg-gray-50">{customer.lastName}</td>
-                <td className="px-4 py-2 ">{customer.email}</td>
-                <td className="px-4 py-2  bg-gray-50">
+              <tr key={customer.customerId} className="border border-gray-800">
+                <td className="px-4 py-2  w-16 bg-white">{customer.customerId}</td>
+                <td className="px-4 py-2  w-32 bg-white">{customer.firstName}</td>
+                <td className="px-4 py-2  w-32 bg-white">{customer.lastName}</td>
+                <td className="px-4 py-2  w-1/2 bg-white">{customer.email}</td>
+                <td className="px-4 py-2 bg-white">
 
                   {/*Edit Customer*/}
                   <Button 
@@ -185,7 +205,7 @@ const ListCustomerComponent: React.FC = () => {
 
                   {/* View Details */}
                   <Button className=" mr-1 justify-center items-center bg-white text-black-600 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
-                  onClick={() => viewCustomer(customer.customerId)}>
+                  onClick={() => handleViewDetailsClick(customer)}>
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
 
@@ -199,15 +219,15 @@ const ListCustomerComponent: React.FC = () => {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
 
-        <Button className=" justify-center items-center bg-white text-blue-600 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        <Button className=" justify-center items-center bg-gray-800 text-teal-300 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Previous
         </Button>
 
-        <span>Page {currentPage} of {totalPages}</span>
-        <Button className="justify-center items-center bg-white text-blue-600 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        <span className="text-teal-300 text-semibold"> {currentPage} of {totalPages}</span>
+        <Button className="justify-center items-center bg-gray-800 text-teal-300 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
@@ -260,7 +280,7 @@ const ListCustomerComponent: React.FC = () => {
                 <Button type="button" onClick={() => setShowAddModal(false)} className="mr-2">
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-blue-500 text-white">
+                <Button type="submit" className=" border border-gray-800 bg-gray-800 text-teal-300">
                   Add Customer
                 </Button>
               </div>
@@ -321,8 +341,68 @@ const ListCustomerComponent: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
-  );
+
+      {/* View Details Modal */}
+      {showDetailsModal && currentCustomer && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded shadow-lg max-w-2xl text-left w-full relative">
+          
+            <h2 className="text-2xl font-semibold mb-4 text-left">{currentCustomer.firstName} {currentCustomer.lastName}</h2>
+            <p><strong>Email:</strong> {currentCustomer.email}</p>
+            <p><strong>Account Created:</strong> {new Date(currentCustomer.createDate).toLocaleDateString()}</p>
+
+            <p><strong>Address:</strong> {currentCustomer.address}, {currentCustomer.city}, {currentCustomer.country}, {currentCustomer.postalCode}</p>
+            <p><strong>Phone:</strong> {currentCustomer.phone}</p>
+             {/* Rental History */}
+             <h3 className="text-xl font-semibold mt-6 mb-4">Rental History</h3>
+             <div className="overflow-y-auto max-h-64">
+               <div className="flex justify-end">
+                 <Button type="button" onClick={() => setShowDetailsModal(false)} className="mr-2 rounded-lg border hover:bg-blue-100">
+                   Close
+                 </Button>
+               </div>
+               <table className="table-auto w-full text-left border-collapse">
+                 <thead>
+                   <tr>
+                     <th className="border px-4 py-2">Rental ID</th>
+                     <th className="border px-4 py-2">Rental Date</th>
+                     <th className="border px-4 py-2">Return Date</th>
+                     <th className="border px-4 py-2">Film Title</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                 
+                     {currentCustomer.rentals
+                       ?.sort((a, b) => {
+                         // Sort by null returnDate first, then by rentalDate
+                         if (a.returnDate === null && b.returnDate !== null) return -1;
+                         if (a.returnDate !== null && b.returnDate === null) return 1;
+                         return new Date(a.rentalDate).getTime() - new Date(b.rentalDate).getTime();
+                       })
+                       .map((rental) => (
+                         <tr key={rental.rentalId}>
+                           <td className="border px-4 py-2">{rental.rentalId}</td>
+                           <td className="border px-4 py-2">{new Date(rental.rentalDate).toLocaleDateString()}</td>
+                           <td className="border px-4 py-2">
+                             {rental.returnDate ? new Date(rental.returnDate).toLocaleDateString() : 'N/A'}
+                           </td>
+                           <td className="border px-4 py-2">{rental.filmTitle}</td>
+                         </tr>
+                       ))}
+                       
+                 </tbody>
+               </table>
+             </div>
+           </div>
+         </div>
+       )}
+
+
+
+
+
+     </div>
+   );
 };
 
 export default ListCustomerComponent;

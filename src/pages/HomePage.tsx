@@ -1,10 +1,10 @@
 import React from 'react';
-import ListTop5FilmsComponent from '../components/ListTop5FilmsComponent';
+import LandingPageComponent from '../components/LandingPageComponent';
 const HomePage = () => {
   return (
     <div >
-     <ListTop5FilmsComponent/>
-      
+     <LandingPageComponent/>
+     
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';  
 import { Input } from './ui/input';    
 import { MoreHorizontal, Popcorn } from 'lucide-react';  
-import { listFilms } from '../services/FilmService'; 
+import { getFilmInventory, listFilms, rentFilmToCustomer } from '../services/FilmService'; 
 
 interface Film {
   filmId: number;
@@ -49,11 +49,12 @@ const ListFilmComponent: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredFilms, setFilteredFilms] = useState<Film[]>([]);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showRentModal, setShowRentModal] = useState(false);
   const [currentFilm, setCurrentFilm] = useState<Film | null>(null);  // For viewing film details
-  const [formData, setFormData] = useState<FilmFormData>({
-    title: '',
-    genre: ''
-  });
+  const [customerId, setCustomerId] = useState('');
+  const [rentedCount, setRentedCount] = useState(0);
+  const [availableToRent, setAvailableToRent] = useState(0);
+  
 
   // Fetch films when component mounts
   useEffect(() => {
@@ -77,12 +78,40 @@ const ListFilmComponent: React.FC = () => {
     const result = films.filter((film) => {
       // Check for title and genre in filmCategories
       const genreMatch = film.filmCategories.some(category => category.categoryName.toLowerCase().includes(query));
-      return film.title.toLowerCase().includes(query) || genreMatch;
+
+      // Check for actor name match
+    const actorMatch = film.filmActors.some(actor => 
+      `${actor.firstName} ${actor.lastName}`.toLowerCase().includes(query)
+    );
+
+      return film.title.toLowerCase().includes(query) || genreMatch || actorMatch;
     });
     setFilteredFilms(result);
     setCurrentPage(1);  // Reset to page 1 after search
   }, [searchQuery, films]);
 
+  const handleRentFilmClick = (film: Film) => {
+    setCurrentFilm(film);
+    fetchInventory(film.filmId);
+    setShowRentModal(true);
+  };
+
+  const fetchInventory = (filmId: number) => {
+    if (filmId === undefined) {
+      console.error('No film ID provided');
+      return;
+    }
+    getFilmInventory(filmId)
+      .then((response) => {
+        setRentedCount(response.data.rentedCount);
+        setAvailableToRent(response.data.availableCount);
+      })
+      .catch((error) => {
+        console.error('Error fetching inventory:', error);
+      });
+  };
+
+ 
   // Get films for the current page
   const indexOfLastFilm = currentPage * filmsPerPage;
   const indexOfFirstFilm = indexOfLastFilm - filmsPerPage;
@@ -101,10 +130,35 @@ const ListFilmComponent: React.FC = () => {
     setCurrentPage(newPage);
   };
 
+  const handleRentSubmit = () => {
+    if (!currentFilm?.filmId) {
+      console.error('Film ID is not available.');
+      return;
+    }
+  
+    const customerIdNumber = parseInt(customerId, 10);
+    if (isNaN(customerIdNumber)) {
+      alert('Please enter a valid customer ID.');
+      return;
+    }
+  
+    rentFilmToCustomer(currentFilm.filmId, customerIdNumber)
+      .then(() => {
+        alert(`Film "${currentFilm.title}" was successfully rented to customer ID ${customerIdNumber}!`);
+        setShowRentModal(false);  // Close the modal
+        setCustomerId(''); // Reset customer ID input field
+      })
+      .catch((error) => {
+        console.error('Error renting film:', error);
+        alert('There was an issue renting the film. Please try again.');
+      });
+  };
+
   return (
     <div className="container mx-auto py-20 p-4 center">
 
       {/* Search bar */}
+
       <div className="mb-4">
         <Input 
           type="text"
@@ -116,63 +170,62 @@ const ListFilmComponent: React.FC = () => {
       </div>
 
       {/* Film Table */}
-      <div className="overflow-x-auto">
-        <table className="table-auto min-w-full text-left border-collapse">
-          <thead>
-            <tr className="border">
-              <th className="px-4 py-2">Title</th>
-              <th className="px-4 py-2 bg-gray-50">Genre</th>
-              <th className="px-4 py-2">Rating</th>
-              <th className="px-4 py-2 bg-gray-50">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentFilms.map((film) => (
-              <tr key={film.filmId} className="border">
-                <td className="px-4 py-2">{film.title}</td>
-                <td className="px-4 py-2 bg-gray-50">
-                  {film.filmCategories.map(category => category.categoryName).join(', ')}
-                </td>
-                <td className="px-4 py-2">{film.rating}</td>
-                <td className="px-4 py-2 bg-gray-50">
-                  {/* View Film Details */}
-                  <Button className="mr-1 justify-center items-center bg-white text-black-600 border rounded-lg shadow hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
-                  onClick={() => handleViewDetailsClick(film)}>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                  <Button className="mr-1 justify-center items-center bg-white text-black-600 border rounded-lg shadow hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  onClick={() => handleRentFilmClick(film)}>
-                    <Popcorn className="h-4 w-4"/>
-                  </Button> 
+<div className="overflow-x-auto overflow-y-auto max-h-160 border shadow-lg border-gray-800">
+  <table className="table-auto min-w-full text-left border-collapse ">
+    <thead>
+      <tr className="border border-gray-800 h-16">
+        <th className="px-4 py-2 w-1/4 bg-white">Title</th>
+        <th className="px-4 py-2 w-1/4 bg-white">Genre</th>
+        <th className="px-4 py-2 w-1/4 bg-white">Rating</th>
+        <th className="px-4 py-2 w-1/4 bg-white">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentFilms.map((film) => (
+        <tr key={film.filmId} className="border border-gray-800 h-16">
+          <td className="px-4 py-2 bg-white">{film.title}</td>
+          <td className="px-4 py-2 bg-white">
+            {film.filmCategories.map(category => category.categoryName).join(', ')}
+          </td>
+          <td className="px-4 py-2 bg-white">{film.rating}</td>
+          <td className="px-4 py-2 bg-white">
+            {/* View Film Details */}
+            <Button className="mr-1 justify-center items-center bg-white text-black-600 border rounded-lg shadow hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" 
+            onClick={() => handleViewDetailsClick(film)}>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+            <Button className="mr-1 justify-center items-center bg-white text-black-600 border rounded-lg shadow hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            onClick={() => handleRentFilmClick(film)}>
+              <Popcorn className="h-4 w-4"/>
+            </Button> 
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
+{/* Pagination */}
+<div className="flex justify-between items-center mt-4">
+  <Button
+    onClick={() => handlePageChange(currentPage - 1)}
+    disabled={currentPage === 1}
+    className="justify-center items-center bg-gray-800 text-semibold text-teal-300 border border-gray-800 rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+  >
+    Previous
+  </Button>
 
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <span className="text-teal-300 font-semibold">{currentPage} of {totalPages}</span>
 
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-4">
-        <Button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="justify-center items-center bg-white text-blue-600 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-        >
-          Previous
-        </Button>
+  <Button
+    onClick={() => handlePageChange(currentPage + 1)}
+    disabled={currentPage === totalPages}
+    className="justify-center items-center text-semibold bg-gray-800 text-teal-300 border border-gray-800 rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+  >
+    Next
+  </Button>
+</div>
 
-        <span>Page {currentPage} of {totalPages}</span>
-
-        <Button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="justify-center items-center bg-white text-blue-600 border rounded-lg shadow hover:bg-blue-100 active:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-        >
-          Next
-        </Button>
-      </div>
 
       {/* Film Details Modal */}
 {showDetailsModal && currentFilm && (
@@ -198,6 +251,27 @@ const ListFilmComponent: React.FC = () => {
     </div>
   </div>
       )}
+
+{showRentModal && currentFilm && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-5 shadow-md rounded">
+      <h2 className="text-xl font-semibold text-center mb-4">Rent "{currentFilm.title}"</h2>
+      <p><strong>Available to Rent:</strong> {availableToRent !== null ? availableToRent : 'Loading...'}</p>
+      <p><strong>Rented:</strong> {rentedCount !== null ? rentedCount : 'Loading...'}</p>
+      <Input
+        type="text"
+        placeholder="Enter Customer ID"
+        value={customerId}
+        onChange={(e) => setCustomerId(e.target.value)}
+        className="w-full p-2 border rounded mb-4"
+      />
+      <div className="flex justify-end">
+        <Button onClick={handleRentSubmit} className="mr-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Rent</Button>
+        <Button onClick={() => setShowRentModal(false)} className="bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Cancel</Button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

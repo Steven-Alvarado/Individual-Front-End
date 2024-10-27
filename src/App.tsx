@@ -9,7 +9,7 @@ function App() {
   
   return (
     <>
-  <div className="container mx-auto">
+  <div className="container mx-auto ">
     <Navbar/>
     <Routes>
     <Route path="/" element={<HomePage /> } />
