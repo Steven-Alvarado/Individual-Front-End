@@ -111,7 +111,7 @@ const LandingPageComponent: React.FC = () => {
                 />
               </div>
               <div className="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <p className="text-lg font-semibold">{film.title}</p>
+                <p className="text-lg text-teal-300 font-semibold">{film.title}</p>
               </div>
             </div>
           ))}
@@ -136,7 +136,7 @@ const LandingPageComponent: React.FC = () => {
                 />
               </div>
               <div className="absolute bottom-0 left-0 w-full p-4 bg-black bg-opacity-60 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <p className="text-lg font-semibold">{actor.firstName} {actor.lastName}</p>
+                <p className="text-lg text-teal-300 font-semibold">{actor.firstName} {actor.lastName}</p>
               </div>
             </div>
           ))}
