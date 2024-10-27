@@ -77,10 +77,11 @@ const LandingPageComponent: React.FC = () => {
 
   const filmImages = [
     '/images/bucketBrotherhood.webp',
+    '/images/jugglerHardly.webp',
     '/images/rocketeerMother.webp',
     '/images/scalawagDuck.webp',
     '/images/forwardTemple.webp',
-    '/images/jugglerHardly.webp',
+
   ];
 
   const actorImages = [

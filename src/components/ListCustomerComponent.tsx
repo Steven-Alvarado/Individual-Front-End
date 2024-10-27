@@ -639,7 +639,7 @@ const confirmDeleteCustomer = async () => {
             {/* Customer Info */}
             <p><strong>Email:</strong> {currentCustomer.email}</p>
             <p><strong>Account Created:</strong> {new Date(currentCustomer.createDate).toLocaleDateString()}</p>
-            <p><strong>Address:</strong> {currentCustomer.address}, {currentCustomer.city}, {currentCustomer.country}, {currentCustomer.postalCode}</p>
+            <p><strong>Address:</strong> {currentCustomer.address}, {currentCustomer.city}, {currentCustomer.district}, {currentCustomer.country}, {currentCustomer.postalCode}</p>
             <p><strong>Phone:</strong> {currentCustomer.phone}</p>
 
             {/* Return Film Section */}
