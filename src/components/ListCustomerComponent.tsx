@@ -144,15 +144,25 @@ const confirmDeleteCustomer = async () => {
     }
   };
 
-  // Handle deleting a customer
   const handleDeleteCustomer = async (customerId: number) => {
     try {
-      await deleteCustomer(customerId);  // Call delete service
-      fetchCustomers();                  // Refresh customer list
+      // Find the customer in the list and check if they have rentals with a null returnDate
+      const customer = customers.find((cust) => cust.customerId === customerId);
+  
+      if (customer && customer.rentals && customer.rentals.some((rental) => rental.returnDate === null)) {
+        alert(`Customer ID ${customerId} cannot be deleted because they have active rentals.`);
+        return; // Exit the function without deleting
+      }
+  
+      // Proceed with deletion if no active rentals are found
+      await deleteCustomer(customerId);
+      fetchCustomers(); // Refresh the customer list
     } catch (error) {
       console.error('Error deleting customer:', error);
     }
   };
+  
+  
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -303,58 +313,143 @@ const confirmDeleteCustomer = async () => {
       </div>
 
       {/* Add Customer Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-gray-800 w-full bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-5 shadow-md rounded w-1/5  shadow-lg">
-            <h2 className="text-xl font-semibold mb-4">Add New Customer</h2>
-            <form onSubmit={handleAddCustomer} className="">
-              <div className="mb-4">
-                <label className="block mb-2">First Name</label>
-                <Input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Last Name</label>
-                <Input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Email</label>
-                <Input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
-              </div>
+{showAddModal && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-8 rounded w-full max-w-md shadow-lg">
+      <h2 className="text-2xl font-semibold mb-6 text-center">Add New Customer</h2>
+      <form onSubmit={handleAddCustomer}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+          {/* Personal Information Column */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Personal Info</h3>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">First Name</label>
+              <Input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Last Name</label>
+              <Input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Email</label>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Phone</label>
+              <Input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+          </div>
 
-              <div className="flex justify-end justify-center py-2 items-center">
-                <Button type="button" onClick={() => setShowAddModal(false)} className="mr-2 border border-gray-800 text-semibold text-teal-300 bg-gray-800 hover:bg-blue-100">
-                  Cancel
-                </Button>
-                <Button type="submit" className="border border-gray-800 bg-gray-800 text-teal-300 hover:bg-blue-100">
-                  Add Customer
-                </Button>
-              </div>
-            </form>
+          {/* Address Information Column */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Address Info</h3>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Address</label>
+              <Input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">City</label>
+              <Input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">District</label>
+              <Input
+                type="text"
+                name="district"
+                value={formData.district}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Country</label>
+              <Input
+                type="text"
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Postal Code</label>
+              <Input
+                type="text"
+                name="postalCode"
+                value={formData.postalCode}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Action Buttons */}
+        <div className="flex justify-end space-x-4 mt-6">
+          <Button
+            type="button"
+            onClick={() => setShowAddModal(false)}
+            className="px-4 py-2 border border-gray-800 text-teal-300 bg-gray-800 rounded-lg hover:bg-blue-100"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="px-4 py-2 bg-gray-800 border border-gray-800 text-teal-300 rounded-lg hover:bg-blue-100"
+          >
+            Add Customer
+          </Button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
 
 
       {/* Delete Confirmation Modal */}
