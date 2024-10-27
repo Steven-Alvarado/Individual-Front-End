@@ -237,8 +237,8 @@ const ListCustomerComponent: React.FC = () => {
 
       {/* Add Customer Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-5 shadow-md rounded shadow-lg">
+        <div className="fixed inset-0 bg-gray-800 w-full bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-5 shadow-md rounded w-1/5  shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Add New Customer</h2>
             <form onSubmit={handleAddCustomer} className="">
               <div className="mb-4">
@@ -276,11 +276,11 @@ const ListCustomerComponent: React.FC = () => {
               </div>
               
               
-              <div className="flex justify-end">
-                <Button type="button" onClick={() => setShowAddModal(false)} className="mr-2">
+              <div className="flex justify-end justify-center py-2 items-center">
+                <Button type="button" onClick={() => setShowAddModal(false)} className="mr-2 border border-gray-800 text-semibold text-teal-300 bg-gray-800 hover:bg-blue-100">
                   Cancel
                 </Button>
-                <Button type="submit" className=" border border-gray-800 bg-gray-800 text-teal-300">
+                <Button type="submit" className="border border-gray-800 bg-gray-800 text-teal-300 hover:bg-blue-100">
                   Add Customer
                 </Button>
               </div>
@@ -291,8 +291,8 @@ const ListCustomerComponent: React.FC = () => {
 
       {/* Edit Customer Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded w-1/5 shadow-lg">
             <h2 className="text-xl font-semibold mb-4">Edit Customer</h2>
             <form onSubmit={handleUpdateCustomer}>
               <div className="mb-4">
@@ -329,11 +329,11 @@ const ListCustomerComponent: React.FC = () => {
                 />
               </div>
               
-              <div className="flex justify-end">
-                <Button type="button" onClick={() => setShowEditModal(false)} className="mr-2">
+              <div className="flex justify-center py-2 items-center">
+                <Button type="button" onClick={() => setShowEditModal(false)} className="mr-2 border border-gray-800 text-semibold text-teal-300 bg-gray-800 hover:bg-blue-100">
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-blue-500 text-white">
+                <Button type="submit" className="bg-gray-800 border border-gray-800 text-semibold text-teal-300 rounded-lg shadow hover:bg-blue-100">
                   Update Customer
                 </Button>
               </div>
@@ -342,63 +342,66 @@ const ListCustomerComponent: React.FC = () => {
         </div>
       )}
 
-      {/* View Details Modal */}
-      {showDetailsModal && currentCustomer && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg max-w-2xl text-left w-full relative">
-          
-            <h2 className="text-2xl font-semibold mb-4 text-left">{currentCustomer.firstName} {currentCustomer.lastName}</h2>
-            <p><strong>Email:</strong> {currentCustomer.email}</p>
-            <p><strong>Account Created:</strong> {new Date(currentCustomer.createDate).toLocaleDateString()}</p>
+     {/* View Details Modal */}
+{showDetailsModal && currentCustomer && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-6 rounded shadow-lg max-w-2xl text-left w-full relative">
+      {/* Title and Close Button */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold">
+          {currentCustomer.firstName} {currentCustomer.lastName}
+        </h2>
+        <Button
+          type="button"
+          onClick={() => setShowDetailsModal(false)}
+          className="text-teal-300 bg-gray-800 hover:bg-blue-100 rounded-lg p-2"
+          aria-label="Close"
+        >
+        Close
+        </Button>
+      </div>
 
-            <p><strong>Address:</strong> {currentCustomer.address}, {currentCustomer.city}, {currentCustomer.country}, {currentCustomer.postalCode}</p>
-            <p><strong>Phone:</strong> {currentCustomer.phone}</p>
-             {/* Rental History */}
-             <h3 className="text-xl font-semibold mt-6 mb-4">Rental History</h3>
-             <div className="overflow-y-auto max-h-64">
-               <div className="flex justify-end">
-                 <Button type="button" onClick={() => setShowDetailsModal(false)} className="mr-2 rounded-lg border hover:bg-blue-100">
-                   Close
-                 </Button>
-               </div>
-               <table className="table-auto w-full text-left border-collapse">
-                 <thead>
-                   <tr>
-                     <th className="border px-4 py-2">Rental ID</th>
-                     <th className="border px-4 py-2">Rental Date</th>
-                     <th className="border px-4 py-2">Return Date</th>
-                     <th className="border px-4 py-2">Film Title</th>
-                   </tr>
-                 </thead>
-                 <tbody>
-                 
-                     {currentCustomer.rentals
-                       ?.sort((a, b) => {
-                         // Sort by null returnDate first, then by rentalDate
-                         if (a.returnDate === null && b.returnDate !== null) return -1;
-                         if (a.returnDate !== null && b.returnDate === null) return 1;
-                         return new Date(a.rentalDate).getTime() - new Date(b.rentalDate).getTime();
-                       })
-                       .map((rental) => (
-                         <tr key={rental.rentalId}>
-                           <td className="border px-4 py-2">{rental.rentalId}</td>
-                           <td className="border px-4 py-2">{new Date(rental.rentalDate).toLocaleDateString()}</td>
-                           <td className="border px-4 py-2">
-                             {rental.returnDate ? new Date(rental.returnDate).toLocaleDateString() : 'N/A'}
-                           </td>
-                           <td className="border px-4 py-2">{rental.filmTitle}</td>
-                         </tr>
-                       ))}
-                       
-                 </tbody>
-               </table>
-             </div>
-           </div>
-         </div>
-       )}
+      <p><strong>Email:</strong> {currentCustomer.email}</p>
+      <p><strong>Account Created:</strong> {new Date(currentCustomer.createDate).toLocaleDateString()}</p>
+      <p><strong>Address:</strong> {currentCustomer.address}, {currentCustomer.city}, {currentCustomer.country}, {currentCustomer.postalCode}</p>
+      <p><strong>Phone:</strong> {currentCustomer.phone}</p>
 
-
-
+      {/* Rental History */}
+      <h3 className="text-xl font-semibold mt-6 mb-4">Rental History</h3>
+      <div className="overflow-y-auto max-h-64">
+        <table className="table-auto w-full text-left border-collapse">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Rental ID</th>
+              <th className="border px-4 py-2">Rental Date</th>
+              <th className="border px-4 py-2">Return Date</th>
+              <th className="border px-4 py-2">Film Title</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentCustomer.rentals
+              ?.sort((a, b) => {
+                // Sort by null returnDate first, then by rentalDate
+                if (a.returnDate === null && b.returnDate !== null) return -1;
+                if (a.returnDate !== null && b.returnDate === null) return 1;
+                return new Date(a.rentalDate).getTime() - new Date(b.rentalDate).getTime();
+              })
+              .map((rental) => (
+                <tr key={rental.rentalId}>
+                  <td className="border px-4 py-2">{rental.rentalId}</td>
+                  <td className="border px-4 py-2">{new Date(rental.rentalDate).toLocaleDateString()}</td>
+                  <td className="border px-4 py-2">
+                    {rental.returnDate ? new Date(rental.returnDate).toLocaleDateString() : 'N/A'}
+                  </td>
+                  <td className="border px-4 py-2">{rental.filmTitle}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
 
 
      </div>

@@ -229,9 +229,14 @@ const ListFilmComponent: React.FC = () => {
 
       {/* Film Details Modal */}
 {showDetailsModal && currentFilm && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 text-left flex justify-center items-center">
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 text-left flex justify-center items-center">
     <div className="bg-white p-5 shadow-md rounded">
-      <h2 className="text-xl font-semibold text-center mb-4">{currentFilm.title} Details</h2>
+<div className="flex justify-end">
+        <Button type="button" onClick={() => setShowDetailsModal(false)} className="mr-2 rounded-lg border border-gray-800 text-semibold text-teal-300 bg-gray-800 hover:bg-blue-100">
+          Close
+        </Button>
+      </div>
+      <h2 className="text-xl font-semibold text-center mb-4">{currentFilm.title}</h2>
       <p><strong>Genres:</strong> {currentFilm.filmCategories.map(category => category.categoryName).join(', ')}</p>
       <p><strong>Release Year:</strong> {currentFilm.releaseYear}</p>
       <p><strong>Rating:</strong> {currentFilm.rating}</p>
@@ -243,11 +248,7 @@ const ListFilmComponent: React.FC = () => {
       <p><strong>Special Features:</strong> {currentFilm.specialFeatures}</p>
       {/* Actors */}
       <p><strong>Actors:</strong> {currentFilm.filmActors.map(actor => `${actor.firstName} ${actor.lastName}`).join(', ')}</p>
-      <div className="flex justify-end">
-        <Button type="button" onClick={() => setShowDetailsModal(false)} className="mr-2 rounded-lg border hover:bg-blue-100">
-          Close
-        </Button>
-      </div>
+      
     </div>
   </div>
       )}
@@ -255,7 +256,7 @@ const ListFilmComponent: React.FC = () => {
 {showRentModal && currentFilm && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div className="bg-white p-5 shadow-md rounded">
-      <h2 className="text-xl font-semibold text-center mb-4">Rent "{currentFilm.title}"</h2>
+      <h2 className="text-xl font-semibold text-left mb-4 py-2">Rent "{currentFilm.title}"</h2>
       <p><strong>Available to Rent:</strong> {availableToRent !== null ? availableToRent : 'Loading...'}</p>
       <p><strong>Rented:</strong> {rentedCount !== null ? rentedCount : 'Loading...'}</p>
       <Input
@@ -263,11 +264,11 @@ const ListFilmComponent: React.FC = () => {
         placeholder="Enter Customer ID"
         value={customerId}
         onChange={(e) => setCustomerId(e.target.value)}
-        className="w-full p-2 border rounded mb-4"
+        className="w-full p-2  border rounded mb-4"
       />
-      <div className="flex justify-end">
-        <Button onClick={handleRentSubmit} className="mr-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600">Rent</Button>
-        <Button onClick={() => setShowRentModal(false)} className="bg-red-500 text-white rounded-lg shadow hover:bg-red-600">Cancel</Button>
+      <div className="flex justify-end justify-center py-2 items-center">
+        <Button onClick={handleRentSubmit} className="mr-2 bg-gray-800 border border-gray-800 text-semibold text-teal-300 rounded-lg shadow hover:bg-blue-100">Rent</Button>
+        <Button onClick={() => setShowRentModal(false)} className="bg-gray-800 border border-gray-800 text-semibold text-teal-300 rounded-lg shadow hover:bg-blue-100">Cancel</Button>
       </div>
     </div>
   </div>

@@ -145,10 +145,10 @@ const LandingPageComponent: React.FC = () => {
 
       {/* Film Details Modal */}
       {selectedFilm && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-20 p-4">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-80 flex items-center justify-center z-20 p-4">
           <div className="bg-white text-left rounded-lg p-6 w-full max-w-3xl overflow-auto relative">
-            <button className="absolute top-4 right-4 rounded-lg border hover:bg-blue-100 px-4 py-2" onClick={handleCloseFilmModal}>Close</button>
-            <h2 className="text-2xl text-center text-black font-bold mb-4">{selectedFilm.title}</h2>
+            <button className="absolute top-4 right-4 rounded-lg text-teal-300 border border-gray-800 text-semibold bg-gray-800 hover:bg-blue-100 px-4 py-2" onClick={handleCloseFilmModal}>Close</button>
+            <h2 className="text-2xl text-center text-semibold text-black font-bold mb-4">{selectedFilm.title}</h2>
             <p><strong>Description:</strong> {selectedFilm.description}</p>
             <p><strong>Release Year:</strong> {selectedFilm.releaseYear}</p>
             <p><strong>Rental Duration:</strong> {selectedFilm.rentalDuration} days</p>
@@ -164,12 +164,12 @@ const LandingPageComponent: React.FC = () => {
 
       {/* Actor Details Modal */}
       {selectedActor && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-20 p-4">
-          <div className="bg-white text-left rounded-lg p-6 w-full max-w-3xl overflow-auto relative">
-            <button className="absolute top-4 right-4 rounded-lg border hover:bg-blue-100 px-4 py-2" onClick={handleCloseActorModal}>Close</button>
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-80 flex items-center justify-center z-20 p-4">
+          <div className="bg-white text-left rounded-lg p-6 w-full max-w-3xl text-center overflow-auto relative">
+            <button className="absolute top-4 right-4 rounded-lg text-teal-300 border border-gray-800 text-semibold bg-gray-800 hover:bg-blue-100 px-4 py-2" onClick={handleCloseActorModal}>Close</button>
             <h2 className="text-2xl text-center text-black font-bold mb-4">{selectedActor.firstName} {selectedActor.lastName}</h2>
-            <p><strong>Top 5 Rented Films:</strong></p>
-            <ul>
+            <h3 className="text-center text-black font-bold mb-4">Top 5 Rented Films</h3> 
+            <ul className="text-semibold">
               {selectedActor.topRentedFilms.map((film) => (
                 <li key={film.filmId}>{film.title}</li>
               ))}
